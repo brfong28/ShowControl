@@ -101,9 +101,9 @@ LDDISPLAY lcd1;	// LCD #1 at default address (0x27)
 /******************************************************************************/
 
 /*======================*/
-// Library Start routine
+// Library setup routine
 /*======================*/
-bool LDstart() {
+bool LDsetup() {
 	// Start the LD (LCD Driver)
 
 	lcd1.init();

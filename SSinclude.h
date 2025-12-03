@@ -13,7 +13,6 @@
 /*===============*/
 // Global Defines
 /*===============*/
-#include <TM1637Display.h>
 
 #define SS_DIO_PIN 3
 #define SS_CLK_PIN 4
@@ -26,29 +25,78 @@
 /******************************************************************************/
 // Class Definition
 /******************************************************************************/
+class SSCLASS {
+public:
+	// Constructor
+	SSCLASS();
+
+	// Public methods
+	void showNumber(int number);
+	void clear();
+	void setBrightness(uint8_t);
+private:
+	// Private members
+	TM1637Display* driver;
+	// Private methods
+};
+/*****************************/
+// Constructor Implementation
+/*****************************/
+/*================*/
+// No Arguments - Set all private Variables to default values
+/*================*/
+SSCLASS::SSCLASS() {
+		// Constructor code here
+		driver = new TM1637Display(SS_CLK_PIN, SS_DIO_PIN);   // 7 Segment display #1
+}
+/********************************/
+// Public Method Implementations
+/********************************/
+
+/*================*/
+//
+/*================*/
+//*****************************************************************************************************
+// showNumber - show number on Seven Segment
+//*****************************************************************************************************
+void SSCLASS::showNumber(int number) {
+	driver->showNumberDec(number, false, 4, 0);
+}
+/*================*/
+//
+/*================*/
+//*****************************************************************************************************
+// clear - clear 
+//*****************************************************************************************************
+void SSCLASS::clear() {
+	driver->clear();;
+}
+/*================*/
+//
+/*================*/
+//*****************************************************************************************************
+// setBrightness - set brightness
+//*****************************************************************************************************
+void SSCLASS::setBrightness(uint8_t number) {
+	driver->showNumberDec(number, false, 4, 0);
+}
 /*********************************/
 // Private Method Implementations
 /*********************************/
 /******************************************************************************/
 // End of Class Definition
-/******************************************************************************/
+/**************** **************************************************************/
 /******************************************************************************/
 // Implementarion Variables
 /******************************************************************************/
-TM1637Display sevenseg1(SS_CLK_PIN, SS_DIO_PIN);   // 7 Segment display #1
+SSCLASS sevenseg1;   // 7 Segment display #1
 /******************************************************************************/
 // 
 /******************************************************************************/
-//*****************************************************************************************************
-// SEVENSEGdisplay - Display number onSeven Segment
-//*****************************************************************************************************
-void SSdisplay(uint8_t display, int number) {
-	sevenseg1.showNumberDec(number, false, 4, 0);
-}
 /*======================*/
-// Library Start routine
+// Library setup routine
 /*======================*/
-bool SSstart() {
+bool SSsetup() {
 	// Start the SS (Seven Segmqnt display) driver
 #if defined(__DEBUG__)
 	Serial.println("==> SSsetup called");
@@ -56,7 +104,7 @@ bool SSstart() {
 
 	sevenseg1.clear();
 	sevenseg1.setBrightness(0x0a);  // set display to maximum brightness
-	sevenseg1.showNumberDec(8888, true, 4, 0);
+	sevenseg1.showNumber(8888);
 	delay(1000);
 	sevenseg1.clear();
 

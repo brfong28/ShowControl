@@ -1,2 +1,4 @@
-# ShowControl2
+# ShowControl
+
 Arduino Based Model Show Control
+

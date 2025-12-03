@@ -1,46 +1,46 @@
 /******************************************************************************/
-// File: CAinclude.h
+// File: PBinclude.h
 // Project: ShowControl
-// Description: CA (Coin Acceptor HX-916 driver) include file
+// Description: PB (Push Button LED) driver
 // Author: Bruce Fong
-// Date: 2025-07-30
+// Date: 2025-08-10
 /******************************************************************************/
-#if !defined(CAversion) // To ensure the header is included only once
-#define CAversion 0.0
+#if !defined(PBversion) // To ensure the header is included only once
+#define PBversion 0.0
 /******************************************************************************/
 // Globals
 /******************************************************************************/
 /*===============*/
 // Global Defines
 /*===============*/
-#define CA_PIN 2
-#define CA_EEPROM_ADDRESS 0
+// #define PBPIN 10   // PBMRRC Used - Not an Interrupt pin
+#define PBPIN 19      // MEGA use - Pin with interrups
+
+#define PBDEBOUNCE 750
 /*===============-=*/
 // Global Includes
 /*================*/
-#include <EEPROM.h>
+#include <LSinclude.h>
 
 /*============================================================================*/
 /******************************************************************************/
 // Class Definition
 /******************************************************************************/
-class CACLASS {
+class PBCLASS {
 public:
 	// Constructor
-	CACLASS();
+	PBCLASS();
 
 	// Public methods
-	int getAccepted();
-	int writeEEPROM();
-	int readEEPROM();
-	int set1Less();
-	int set1More();
-	bool isZero();
-	bool isSaved();
+	bool pushEvent();
+	bool isPushed();
+	bool isPushed(bool reset);
+
 private:
 	// Private members
-	int centsAccepted;
-	bool saved;
+	bool pushed;
+	unsigned long pushTime;
+	uint8_t pin;
 	// Private methods
 
 };
@@ -50,82 +50,38 @@ private:
 /*================*/
 // No Arguments - Set all private Variables to default values
 /*================*/
-CACLASS::CACLASS () {
+PBCLASS::PBCLASS() {
 	// Constructor code here
-	readEEPROM();
+	pushed = false;
+	pin = PBPIN;
+	pushTime = 0;
 }
 /********************************/
 // Public Method Implementations
 /********************************/
-
 /*================*/
 //
 /*================*/
-int CACLASS::getAccepted() {
-	// code here
-	return centsAccepted;
+bool PBCLASS::pushEvent() {
+	if ((millis() - pushTime) >= PBDEBOUNCE) {
+#if defined(__DEBUG__)
+		Serial.println("*** PB Pushed");
+#endif
+		// LEDSset(0, 0, 0, 255, 0);   // GREEN
+		pushed = true;
+		pushTime = millis();
+	};
+};
+/*================*/
+//
+/*================*/
+bool PBCLASS::isPushed() {
+	return pushed;
 }
-/*================*/
-//
-/*================*/
-int CACLASS::writeEEPROM() {
-	// code here
-	int current_value;
-	EEPROM.get(CA_EEPROM_ADDRESS, current_value);
-	if (current_value != centsAccepted) {
-		EEPROM.put(CA_EEPROM_ADDRESS, centsAccepted);
-		saved = true;
-		return centsAccepted;
-	}
-	return -1;
-}
-/*================*/
-//
-/*================*/
-int CACLASS::readEEPROM() {
-	// code here
-	EEPROM.get(CA_EEPROM_ADDRESS, centsAccepted);
-	if (centsAccepted < 0) {
-		centsAccepted = 0;
-	//	writeEEPROM();
-		return centsAccepted;
-	}
-	return -1;
-}
-/*================*/
-//
-/*================*/
-int CACLASS::set1Less() {
-	// code here
-	if (centsAccepted > 0) {
-		centsAccepted--;
-		saved = false;
-	}
-	return centsAccepted;
-}
-/*================*/
-//
-/*================*/
-int CACLASS::set1More() {
-	// code here
-	centsAccepted++;
-	saved = false;
-	return centsAccepted;
-}
-/*================*/
-//
-/*================*/
-bool CACLASS::isZero() {
-	// code here
-	if (centsAccepted == 0) return true;
-	return false;
-}
-/*================*/
-//
-/*================*/
-bool CACLASS::isSaved() {
-	// code here
-	return saved;
+bool PBCLASS::isPushed(bool reset) {
+	bool current = pushed;
+	if (reset) pushed = false;
+	return current;
 }
 /*********************************/
 // Private Method Implementations
@@ -136,37 +92,38 @@ bool CACLASS::isSaved() {
 /******************************************************************************/
 // Implementarion Variables
 /******************************************************************************/
-CACLASS coinsAccepted;	// 
+PBCLASS pb1;
 /******************************************************************************/
 // 
 /******************************************************************************/
 /*================*/
 //
 /*================*/
-static void CAinterrupt() {
+static void PBinterrupt() {
 	// code here
-	coinsAccepted.set1More();
-}
+	pb1.pushEvent();
+};
+//*****************************************************************************************************
+// 
+//*****************************************************************************************************
 /*======================*/
-// Library Start routine
+// Library setup routine
 /*======================*/
-bool CAsetup() {
-	// Start the CA (Coin Acceptor Driver)
+bool PBsetup() {
+	// Start the PB (Push Button) driver
 #if defined(__DEBUG__)
-	Serial.println("==> CAsetup called");
+	Serial.println("==> SSsetup called");
 #endif
 
-	pinMode(CA_PIN, INPUT);
-	attachInterrupt(digitalPinToInterrupt(CA_PIN), CAinterrupt, FALLING);
-
-	coinsAccepted.readEEPROM();
+	pinMode(PBPIN, INPUT);
+	attachInterrupt(digitalPinToInterrupt(PBPIN), PBinterrupt, RISING);
 
 #if defined(__DEBUG__)
-	Serial.println("<== CAsetup return");
+	Serial.println("<== SSsetup return");
 #endif
 	
 }
 /******************************************************************************/
 // End of Template Class
 /******************************************************************************/
-#endif // CAversion
+#endif // PBversion

@@ -314,9 +314,9 @@ SLDEVICES SLservos;
 /******************************************************************************/
 /*==================*/
 /*======================*/
-// Library Start routine
+// Library setup routine
 /*======================*/
-bool SLstart() {
+bool SLsetup() {
 	// Start the Servo/LED driver system
 	ServoEasing EasingTypeForAllServos(EASE_SINE_IN_OUT);
 

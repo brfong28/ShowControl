@@ -267,9 +267,9 @@ void SCsec_tick() {
 	}
 }
 /*======================*/
-// Library Start routine
+// Library setup routine
 /*======================*/
-bool SCstart() {
+bool SCsetup() {
 	//===============================//
 	// Start initialization
 	//===============================//

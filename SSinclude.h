@@ -104,9 +104,15 @@ bool SSsetup() {
 
 	sevenseg1.clear();
 	sevenseg1.setBrightness(0x0a);  // set display to maximum brightness
-	sevenseg1.showNumber(8888);
+	sevenseg1.showNumber(0000);
 	delay(1000);
-	sevenseg1.clear();
+	sevenseg1.showNumber(2222);
+	delay(1000);
+	sevenseg1.showNumber(4444);
+	delay(1000);
+	sevenseg1.showNumber(6666);
+	delay(1000);
+	sevenseg1.showNumber(8888);
 
 #if defined(__DEBUG__)
 	Serial.println("<== SSsetup return");

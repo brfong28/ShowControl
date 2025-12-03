@@ -1,6 +1,6 @@
 /******************************************************************************/
 // File: SCinclude.h
-// Project: ShowControl2
+// Project: ShowControl
 // Description: SC (ShowControl) include file
 // Author: Bruce Fong
 // Date: 2025-07-10

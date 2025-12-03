@@ -16,7 +16,12 @@
 #if !defined(SLSERVOmax)
 #define SLSERVOmax 16
 #endif
-
+#if !defined(SLMaxServos)
+#define SLMaxServos 8
+#endif
+#if !defined(SLMaxLeds)
+#define SLMaxLeds 8
+#endif
 
 // Must specify this before the include of "ServoEasing.hpp"
 #define USE_PCA9685_SERVO_EXPANDER    // Activating this enables the use of the PCA9685 I2C expander chip/board.
@@ -54,14 +59,12 @@
 #define SECOND_PCA9685_EXPANDER_ADDRESS (PCA9685_DEFAULT_ADDRESS  + 0x01) // Bridged A5 on the board -> 0x41
 #define MAX_pin 15		// max pin number (0-xx) on expander
 
-#define MAX_LEDS 24
 #define LED_0_PULSE_WIDTH 0
 #define LED_180_PULSE_WIDTH 4000
 #define LED_180_PULSE_WIDTH_LAST 2900
 #define MIN_LED_VALUE 0
 #define MAX_LED_VALUE 180
 
-#define MAX_SERVOS 8
 #define DEG_0_PULSE_WIDTH 
 #define DEGREE_180_PULSE_WIDTH 4000
 #define MIN_DEGREE_VALUE 0
@@ -188,10 +191,11 @@ public:
 	SLDEVICES();
 	// Public methods
 	begin();
-	attach(uint8_t dev);
 	bool isLED(uint8_t dev);
+	attach(uint8_t dev);
 	bool setLED(uint8_t dev, uint8_t brightness, int speed);
 	bool setServo(uint8_t dev, uint8_t degree, int speed);
+	cycleMinMax(uint8_t dev);
 	uint8_t maxDevices();
 	bool synch();
 
@@ -226,7 +230,7 @@ SLDEVICES::begin() {
 	uint8_t dev = 0;
 	uint8_t i2cAddr = FIRST_PCA9685_EXPANDER_ADDRESS;
 	// Define the servos
-	for (uint8_t i = 0; i < MAX_SERVOS; i++) {
+	for (uint8_t i = 0; i < SLMaxServos; i++) {
 		device[dev] = new SLDEVICE(dev, i2cAddr, pin, false);
 		dev++;
 		pin++;
@@ -238,7 +242,7 @@ SLDEVICES::begin() {
 
 
 	// Define the LEDs
-	for (uint8_t i = 0; i < MAX_LEDS; i++) {
+	for (uint8_t i = 0; i < SLMaxLeds; i++) {
 		device[dev] = new SLDEVICE(dev, i2cAddr, pin, true);
 		dev++;
 		pin++;
@@ -251,15 +255,15 @@ SLDEVICES::begin() {
 /*================*/
 //
 /*================*/
-SLDEVICES::attach(uint8_t dev) {
-	if (device[dev]->isLED()) device[dev]->attach(MIN_LED_VALUE,MAX_LED_VALUE,LED_0_PULSE_WIDTH,LED_180_PULSE_WIDTH);
-	else device[dev]->attach(MIN_DEGREE_VALUE,MAX_DEGREE_VALUE, DEFAULT_MICROSECONDS_FOR_0_DEGREE, DEFAULT_MICROSECONDS_FOR_180_DEGREE);
+bool SLDEVICES::isLED(uint8_t dev) {
+	return device[dev]->isLED();
 }
 /*================*/
 //
 /*================*/
-bool SLDEVICES::isLED(uint8_t dev) {
-	return device[dev]->isLED();
+SLDEVICES::attach(uint8_t dev) {
+	if (isLED(dev)) device[dev]->attach(MIN_LED_VALUE, MAX_LED_VALUE, LED_0_PULSE_WIDTH, LED_180_PULSE_WIDTH);
+	else device[dev]->attach(MIN_DEGREE_VALUE, MAX_DEGREE_VALUE, DEFAULT_MICROSECONDS_FOR_0_DEGREE, DEFAULT_MICROSECONDS_FOR_180_DEGREE);
 }
 /*================*/
 //
@@ -285,6 +289,21 @@ bool SLDEVICES::setServo(uint8_t dev, uint8_t degree, int speed) {
 	device[dev]->setPosition(degree, speed);
 
 	return true;
+}
+/*================*/
+//
+/*================*/
+SLDEVICES::cycleMinMax(uint8_t dev) {
+	if (isLED(dev)) {
+		setLED(dev, 100, 0);
+		delay(1000);
+		setLED(dev, 0, 0);
+	}
+	else {
+		setServo(dev, 90, 0);
+		delay(1000);
+		setServo(dev, 0, 0);
+	}
 }
 /*================*/
 //
@@ -324,6 +343,10 @@ bool SLsetup() {
 
 	for (uint8_t dev = 0; dev < SLSERVOmax; dev++) {
 		SLservos.attach(dev);
+	}
+
+	for (uint8_t dev = 0; dev < SLSERVOmax; dev++) {
+		SLservos.cycleMinMax(dev);
 	}
 
 	return true; // Return true if successful

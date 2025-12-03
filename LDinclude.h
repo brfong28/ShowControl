@@ -108,6 +108,7 @@ bool LDsetup() {
 
 	lcd1.init();
 	lcd1.backlight();
+	lcd1.put(0, 0, "Starting LCD1");
 }
 /******************************************************************************/
 // End of Template Class

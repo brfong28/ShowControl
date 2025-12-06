@@ -29,12 +29,12 @@
 /******************************************************************************/
 // Class Definition
 /******************************************************************************/
-class SCTIMER {
+class SCCLASS {
 public:
 	//============
 	// Constructor
 	//============
-	SCTIMER();
+	SCCLASS();
 	//===============
 	// Public methods
 	//===============
@@ -75,7 +75,7 @@ private:
 /*================*/
 // No Arguments - Set all private Variables to default values
 /*================*/
-SCTIMER::SCTIMER() {
+SCCLASS::SCCLASS() {
 	// Constructor code here
 	sec_elapsed = 0UL;		// Elapsed seconds (counts up) indendent of frame_elapsed
 	frame_elapsed = 0UL;	// Elapsed frames (counts up) independent of sec_elapsed
@@ -92,7 +92,7 @@ SCTIMER::SCTIMER() {
 /*================*/
 // setElapsed
 /*================*/
-void SCTIMER::setElapsed(unsigned long seconds) {
+void SCCLASS::setElapsed(unsigned long seconds) {
 	// set logic here
 	sec_elapsed = seconds;
 	frame_elapsed = seconds * SC_FRAME_RATE;
@@ -104,7 +104,7 @@ void SCTIMER::setElapsed(unsigned long seconds) {
 /*================*/
 // setRemain
 /*================*/
-void SCTIMER::setRemain(unsigned long seconds) {
+void SCCLASS::setRemain(unsigned long seconds) {
 	// set logic here
 	sec_elapsed = 0;
 	frame_elapsed = 0;
@@ -116,47 +116,47 @@ void SCTIMER::setRemain(unsigned long seconds) {
 /*================*/
 // stopTimer
 /*================*/
-void SCTIMER::stopTimer() {
+void SCCLASS::stopTimer() {
 	running = false;
 }
 /*================*/
 // startTimer
 /*================*/
-void SCTIMER::startTimer() {
+void SCCLASS::startTimer() {
 	running = true;
 }
 /*================*/
 //
 /*================*/
-unsigned long SCTIMER::getSecRemain() {
+unsigned long SCCLASS::getSecRemain() {
 	// get information logic here
 	return sec_remain;
 }
 /*================*/
 //
 /*================*/
-unsigned long SCTIMER::getFrameRemain() {
+unsigned long SCCLASS::getFrameRemain() {
 	// get information logic here
 	return frame_remain;
 }
 /*================*/
 //
 /*================*/
-unsigned long SCTIMER::getSecElapsed() {
+unsigned long SCCLASS::getSecElapsed() {
 	// get information logic here
 	return sec_elapsed;
 }
 /*================*/
 //
 /*================*/
-unsigned long SCTIMER::getFrameElapsed() {
+unsigned long SCCLASS::getFrameElapsed() {
 	// get information logic here
 	return frame_elapsed;
 }
 /*================*/
 //
 /*================*/
-String SCTIMER::displaySecElapsed() {
+String SCCLASS::displaySecElapsed() {
 	// display information logic here
 	unsigned long dys = (sec_elapsed) / 86400UL;
 	unsigned long hrs = (sec_elapsed - (dys * 86400UL)) / 3600UL;
@@ -181,7 +181,7 @@ String SCTIMER::displaySecElapsed() {
 /*================*/
 //
 /*================*/
-bool SCTIMER::frameChanged(bool reset) {
+bool SCCLASS::frameChanged(bool reset) {
 	// frameChanged logic here
 	if (!newFrame) return false;
 	if (reset) newFrame = false;
@@ -190,7 +190,7 @@ bool SCTIMER::frameChanged(bool reset) {
 /*================*/
 //
 /*================*/
-bool SCTIMER::secChanged(bool reset) {
+bool SCCLASS::secChanged(bool reset) {
 	// secondChanged logic here
 	if (!newSec) return false;
 	if (reset) newSec = false;
@@ -205,8 +205,8 @@ bool SCTIMER::secChanged(bool reset) {
 /******************************************************************************/
 // Implementarion Variables
 /******************************************************************************/
-SCTIMER scClock_RT; // Realtime clock
-SCTIMER scClock_ST; // Showtime clock
+SCCLASS scClock_RT; // Realtime clock
+SCCLASS scClock_ST; // Showtime clock
 
 ISR_Timer scISR_timer;
 /******************************************************************************/

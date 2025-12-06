@@ -26,10 +26,10 @@
 /******************************************************************************/
 // Class Definition
 /******************************************************************************/
-class LDDISPLAY /* : public LiquidCrystal_I2C */ {
+class LDCLASS /* : public LiquidCrystal_I2C */ {
 public:
 	// Constructor
-	LDDISPLAY(uint8_t i2cAdd, uint8_t cols, uint8_t rows);
+	LDCLASS(uint8_t i2cAdd, uint8_t cols, uint8_t rows);
 
 	// Public methods
 	void init();
@@ -48,7 +48,7 @@ private:
 /*================*/
 // No Arguments - Set all private Variables to default values
 /*================*/
-LDDISPLAY::LDDISPLAY (uint8_t i2cAdd=LDBASEADD, uint8_t cols=LDCOLS, uint8_t rows=LDROWS) {
+LDCLASS::LDCLASS (uint8_t i2cAdd=LDBASEADD, uint8_t cols=LDCOLS, uint8_t rows=LDROWS) {
 	// Constructor code here
 
 	display = new LiquidCrystal_I2C(i2cAdd, cols, rows);
@@ -59,21 +59,21 @@ LDDISPLAY::LDDISPLAY (uint8_t i2cAdd=LDBASEADD, uint8_t cols=LDCOLS, uint8_t row
 /*================*/
 //
 /*================*/
-void LDDISPLAY::init() {
+void LDCLASS::init() {
 	// Initialization code here
 	display->init();
 }
 /*================*/
 //
 /*================*/
-void LDDISPLAY::backlight() {
+void LDCLASS::backlight() {
 	// backlight code here
 	display->backlight();
 }
 /*================*/
 //
 /*================*/
-void LDDISPLAY::put(uint8_t col, uint8_t row, unsigned long num) {
+void LDCLASS::put(uint8_t col, uint8_t row, unsigned long num) {
 	// display code here
 	display->setCursor(col, row);
 	display->print(num);
@@ -81,7 +81,7 @@ void LDDISPLAY::put(uint8_t col, uint8_t row, unsigned long num) {
 /*================*/
 //
 /*================*/
-void LDDISPLAY::put(uint8_t col, uint8_t row, String str) {
+void LDCLASS::put(uint8_t col, uint8_t row, String str) {
 	// display code here
 	display->setCursor(col, row);
 	display->print(str);
@@ -95,7 +95,7 @@ void LDDISPLAY::put(uint8_t col, uint8_t row, String str) {
 /******************************************************************************/
 // Implementarion Variables
 /******************************************************************************/
-LDDISPLAY lcd1;	// LCD #1 at default address (0x27)
+LDCLASS lcd1;	// LCD #1 at default address (0x27)
 /******************************************************************************/
 // 
 /******************************************************************************/

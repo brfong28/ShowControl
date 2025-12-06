@@ -78,12 +78,12 @@
 // Class Definition
 /******************************************************************************/
 /*===================================================================*/
-/* Class: SLDEVICE                                                   */
+/* Class: SLCLASS                                                   */
 /*===================================================================*/
-class SLDEVICE {
+class SLCLASS {
 public:
 	// Constructor
-	SLDEVICE(uint8_t dev, uint8_t i2cAddr, uint8_t pin, bool led);
+	SLCLASS(uint8_t dev, uint8_t i2cAddr, uint8_t pin, bool led);
 	// Public methods
 	void attach(int minDeg, int maxDeg, int minPulse, int maxPulse);
 	bool isLED();
@@ -91,25 +91,18 @@ public:
 	bool setPosition(uint8_t degree, int speed);
 	int getMinDegree();
 	int getMaxDegree();
-
 private:
 	// Private members
 	uint8_t device;
 	uint8_t i2cAddress;
 	uint8_t expanderPin;
-
 	ServoEasing* driver;
 	bool LED;
-
 	int pulseWidth0;
 	int pulseWidth180;
-
 	int MinDegree;
 	int MaxDegree;
-
-
 	// Private methods
-
 };
 /*****************************/
 // Constructor Implementation
@@ -117,7 +110,7 @@ private:
 /*================*/
 // No Arguments - Set all private Variables to default values
 /*================*/
-SLDEVICE::SLDEVICE(uint8_t dev, uint8_t address, uint8_t pin, bool led) /*  : exampleVariable(0) */ {
+SLCLASS::SLCLASS(uint8_t dev, uint8_t address, uint8_t pin, bool led) {
 	// Constructor code here
 	LED = led;
 	device = dev;
@@ -131,7 +124,7 @@ SLDEVICE::SLDEVICE(uint8_t dev, uint8_t address, uint8_t pin, bool led) /*  : ex
 /*================*/
 //
 /*================*/
-void SLDEVICE::attach(int minDeg, int maxDeg, int minPulse, int maxPulse) {
+void SLCLASS::attach(int minDeg, int maxDeg, int minPulse, int maxPulse) {
 	// attach logic here
 	pulseWidth0 = minPulse;
 	if ((expanderPin == 15)) {
@@ -148,14 +141,14 @@ void SLDEVICE::attach(int minDeg, int maxDeg, int minPulse, int maxPulse) {
 /*================*/
 //
 /*================*/
-bool SLDEVICE::isLED() {
+bool SLCLASS::isLED() {
 	// is logic here
 	return LED;
 }
 /*================*/
 //
 /*================*/
-bool SLDEVICE::isServo() {
+bool SLCLASS::isServo() {
 	// is logic here
 	if (LED) return false;
 	return true;
@@ -163,7 +156,7 @@ bool SLDEVICE::isServo() {
 /*================*/
 //
 /*================*/
-bool SLDEVICE::setPosition(uint8_t degree, int speed) {
+bool SLCLASS::setPosition(uint8_t degree, int speed) {
 	// is logic here
 	driver->startEaseTo(degree, speed, START_UPDATE_BY_INTERRUPT);
 
@@ -171,14 +164,14 @@ bool SLDEVICE::setPosition(uint8_t degree, int speed) {
 /*================*/
 //
 /*================*/
-int SLDEVICE::getMinDegree() {
+int SLCLASS::getMinDegree() {
 	// is logic here
 	return MinDegree;
 }
 /*================*/
 //
 /*================*/
-int SLDEVICE::getMaxDegree() {
+int SLCLASS::getMaxDegree() {
 	// is logic here
 	return MaxDegree;
 }
@@ -202,7 +195,7 @@ public:
 private:
 	// Private members
 	uint8_t maxDevice;
-	SLDEVICE* device[SLSERVOmax];
+	SLCLASS* device[SLSERVOmax];
 
 	// Private methods
 
@@ -231,7 +224,7 @@ SLDEVICES::begin() {
 	uint8_t i2cAddr = FIRST_PCA9685_EXPANDER_ADDRESS;
 	// Define the servos
 	for (uint8_t i = 0; i < SLMaxServos; i++) {
-		device[dev] = new SLDEVICE(dev, i2cAddr, pin, false);
+		device[dev] = new SLCLASS(dev, i2cAddr, pin, false);
 		dev++;
 		pin++;
 		if (pin > MAX_pin) {
@@ -243,7 +236,7 @@ SLDEVICES::begin() {
 
 	// Define the LEDs
 	for (uint8_t i = 0; i < SLMaxLeds; i++) {
-		device[dev] = new SLDEVICE(dev, i2cAddr, pin, true);
+		device[dev] = new SLCLASS(dev, i2cAddr, pin, true);
 		dev++;
 		pin++;
 		if (pin > MAX_pin) {
@@ -268,7 +261,7 @@ SLDEVICES::attach(uint8_t dev) {
 /*================*/
 //
 /*================*/
-bool SLDEVICES::setLED(uint8_t dev,uint8_t brightness, int speed) {
+bool SLDEVICES::setLED(uint8_t dev, uint8_t brightness, int speed) {
 	if (!isLED(dev)) return false;
 	int range = device[dev]->getMaxDegree() - device[dev]->getMinDegree();
 	int degree = range * (brightness / 100.0);
@@ -287,8 +280,7 @@ bool SLDEVICES::setLED(uint8_t dev,uint8_t brightness, int speed) {
 bool SLDEVICES::setServo(uint8_t dev, uint8_t degree, int speed) {
 	if (isLED(dev)) return false;
 	device[dev]->setPosition(degree, speed);
-
-	return true;
+		return true;
 }
 /*================*/
 //
@@ -321,9 +313,6 @@ bool SLDEVICES::synch() {
 /*********************************/
 // Private Method Implementations
 /*********************************/
-/******************************************************************************/
-// End of Class Definition
-/******************************************************************************/
 /******************************************************************************/
 // Implementarion Variables
 /******************************************************************************/
